@@ -1,0 +1,615 @@
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FILE ENCRYPTION</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <style>
+          html{scroll-behavior: smooth;}
+          @font-face {
+                    font-family: myFirstFont;
+                    src: url(FredokaOne-Regular.ttf);}
+.ble{
+    background-color: #75c0d1;
+}
+.topcorner{
+   position:absolute;
+   top:0;
+   left:0;
+  }
+    </style>
+</head>
+
+<body style="font-family: myFirstFont;"> 
+    <header class="topcorner ">
+      <button class="  bg-gray-500 px-7 text-2xl block h-28"> HOME</button>
+    </header>
+    <div class="ble homepage h-screen flex flex-col text-center items-center justify-center ">
+        <h1 class="text-5xl p-5">FILE ENCRYPTION | DECRYPTION</h1>
+        <a class="encrypt-button flex bg-pink-500 rounded-lg text-2xl p-5 m-5 cursor-pointer"><img src="images/icons8-lock-30.png" alt="lock"> ENCRYPT</a>
+        <a class="decrypt-button flex bg-green-500 rounded-lg text-2xl p-5 m-5 cursor-pointer" ><img src="images/icons8-key-30.png" alt="key">DECRYPT</a>
+    </div>
+    <div style="height: 100vh;" class=" hidden encrypt-page bg-pink-500 flex flex-col text-center items-center justify-center">
+        <h1 class="text-5xl p-5 m-7"> <span>
+            Choose file to Encrypt</span></h1>
+        
+            <input type="file" class="encrypt-input border border-black rounded-lg p-7">
+            <a class="encrypt-attr ble flex rounded-lg text-2xl p-3 m-5 cursor-pointer"><img src="images/icons8-lock-30.png" alt="lock">ENCRYPT</a>
+    </div>
+    <div style="height: 100vh;" class="bg-pink-500  downloadencrypted  hidden flex flex-col justify-center items-center">
+        <h2 class="text-2xl">Here's your encrypted File</h2>
+        <a class="encrypt-download ble flex rounded-lg text-2xl p-3 m-5 cursor-pointer"><img src="images/icons8-downloads-48.png"  width="30" height="30" alt="download">Download</a>
+    </div>
+    <div style="height: 100vh;" class=" hidden bg-green-500 decrypt-page flex flex-col text-center items-center justify-center">
+        <h1 class="text-5xl p-5 m-7"> <span>
+            Choose file to Decrypt</span></h1>
+        <input type="file"  class=" decrypt-input border border-black rounded-lg p-7">
+        <a class="decrypt-attr ble flex rounded-lg text-2xl p-3 m-5 cursor-pointer"><img src="images/icons8-key-30.png" alt="key">DECRYPT</a>
+
+    </div>
+    <div style="height: 100vh;" class="bg-pink-500 downloaddecrypted hidden flex flex-col justify-center items-center">
+        <h2 class="text-2xl">Here's your decrypted File</h2>
+        <a class="decrypt-download  ble flex rounded-lg text-2xl p-3 m-5 cursor-pointer"><img src="images/icons8-downloads-48.png" width="30" height="30" alt="download">Download</a>
+    </div>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+<script src="index.js"></script>
+
+</html>
+
+INDEX.JS
+$(document).ready(function(){
+    $('.encrypt-button').click(function(){
+        $('.homepage').addClass('hidden');
+        $('.encrypt-page').removeClass('hidden');
+    });
+  });
+
+  $(document).ready(function(){
+    $('.decrypt-button').click(function(){
+        $('.homepage').addClass('hidden');
+        $('.decrypt-page').removeClass('hidden');
+    });
+  });
+$('header > button').click(function(){
+    $('.homepage').removeClass('hidden');
+    $('.encrypt-page').addClass('hidden');
+    $('.decrypt-page').addClass('hidden');
+    $('.downloadencrypted').addClass('hidden');
+    $('downloaddecrypted').addClass('hidden');
+
+});
+
+$('.encrypt-page > .encrypt-attr').click(function(){
+  $('.downloadencrypted').removeClass('hidden');
+  $('.encrypt-page').addClass('hidden');
+})
+
+$('.decrypt-page > .decrypt-attr').click(function(){
+    $('.downloaddecrypted').removeClass('hidden');
+    $('.decrypt-page').addClass('hidden');
+  })
+
+$('.encrypt-page > .encrypt-input').on('change', function(e){
+       var file_name = e.target.files[0].name;
+        readFileENC(this.files[0], function(e) {
+        var encrypted = CryptoJS.AES.encrypt(e.target.result, "password"); 
+        $('.downloadencrypted > .encrypt-download').attr('href','data:application/octet-stream,'+ encrypted);
+        $('.downloadencrypted > .encrypt-download').attr('download',  file_name + '.encrypted');
+        console.log('done');
+        });       
+});
+
+$('.decrypt-page > .decrypt-input').on('change', function(e){
+       var file_name = e.target.files[0].name;
+        readFileDEC(this.files[0], function(e) {
+        
+        var decrypted = CryptoJS.AES.decrypt(e.target.result, "password").toString(CryptoJS.enc.Latin1); 
+        $('.downloaddecrypted > .decrypt-download').attr('href', decrypted);
+        $('.downloaddecrypted > .decrypt-download').attr('download',  file_name.replace('.encrypted','') );
+        console.log('done');
+
+
+        });
+        
+    });
+    
+function readFileENC(file, callback){
+    var reader = new FileReader();
+    reader.onload = callback
+    reader.readAsDataURL(file);
+}
+
+function readFileDEC(file, callback){
+  var reader = new FileReader();
+  reader.onload = callback
+  reader.readAsText(file);
+}
+
+test.html
+                                                                                                                                                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEST</title>
+</head>
+<style>
+    .break {
+        height: 100px;
+        width: 100px;
+        background-color: red;
+    }
+    .lun {
+        height: 100px;
+        width: 100px;
+        background-color: yellow;
+    }
+    .dinn {
+        height: 100px;
+        width: 100px;
+        background-color: green;
+    }
+    .outer{
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+    .head{
+        text-align: center;
+        padding: 150px;
+        background-color: aqua;
+        margin: 0%;
+    }
+</style>
+<body>
+    <!-- <div class="head">
+        <h1>MENU CARD </h1>
+    </div> -->
+   <div class="outer"> <div class="breakfast">
+        <h1>BREAKFAST</h1>
+        <div class="break"></div><br>
+        <div class="break"></div> <br>
+        <div class="break"></div> <br>
+        <div class="break"></div> <br>
+        <div class="break"></div> <br>
+        <div class="break"></div> <br>
+        <div class="break"></div>
+    </div>
+    
+    <div class="lunch">
+        <h1>LUNCH</h1>
+        <div class="lun">
+        </div><br>
+        <div class="lun"></div> <br>
+        <div class="lun"></div> <br>
+        <div class="lun"></div> <br>
+        <div class="lun"></div> <br>
+        <div class="lun"></div> <br>
+        <div class="lun"></div>
+    </div>
+
+    <div class="dinner">
+        <h1>DINNER</h1>
+        <div class="dinn"></div><br>
+        <div class="dinn"></div> <br>
+        <div class="dinn"></div> <br>
+        <div class="dinn"></div> <br>
+        <div class="dinn"></div> <br>
+        <div class="dinn"></div> <br>
+        <div class="dinn"></div>
+    </div>
+</div>
+</body>
+</html>
+                                                                                                                                                  
+AES.HTML
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DES</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+      $(function() {
+        $("#accordion").accordion();
+      });
+    </script>
+    <style>
+      .myBox {
+        border-bottom: 5px solid transparent;
+        border-image: linear-gradient(0.25turn, rgba(255, 249, 34), rgba(255, 0, 128), rgba(56, 2, 155, 0));
+        border-image-slice: 1;
+        width: 25%;
+        text-align: center;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex flex-col">
+      <div class="h-screen outer flex flex-col">
+        <br>
+        <textgradient class="textgradient flex justify-center items-center hover:cursor-pointer">
+          <h3 class=" text-center text-5xl myBox">AES ENCRYPTION </h3>
+        </textgradient>
+        <br>
+        <div class="flex items-center justify-center">
+          <div class="flex flex-col border border-black p-7 rounded-lg bg-blue-100">
+            <h1 class="text-center font-bold">Encryption</h1>
+            <h2>----------------------------------------------------------</h2>
+            <span class='font-bold'>Enter your text (Minimum 16 letters):</span>
+            <input type="text" minlength="8" class="encrypt_user_text  border border-blue-500 rounded-lg text-black d p-2.5 focus:ring-blue-500 w-full bg-blue-100">
+            <span class='font-bold'>Enter your Key (Minimum 16 letters)</span>
+            <input type="text" class="encrypt_user_key border  border-blue-500 rounded-lg focus:ring-blue-500 w-full bg-blue-100 p-2.5">
+            <span class='font-bold'>Choose Mode:</span>
+            <select name="mode" class="encrypt_mode font-bold border border-blue-500 rounded-lg focus:ring-blue-500 w-full bg-blue-100">
+              <option value="CBC">CBC</option>
+              <option value="CFB">CFB</option>
+              <option value="CTR">CTR</option>
+              <option value="OFB">OFB</option>
+              <option value="ECB">ECB</option>
+            </select>
+            <br>
+            <span class="flex justify-center items-center">
+              <button disabled id="encryptbutton" class="cursor-not-allowed w-32 text-black bg-blue-500 hover:bg-blue-700 focus:ring-4  font-medium rounded-lg text-2xl px-5 py-2.5 text-center "> Encrypt </button>
+            </span>
+            <br>
+            <br>
+            <h4 class="font-bold">Encrypted Text:</h4>
+            <textarea id="encrypted_output" class="block p-2.5 w-full text-2xl border border-blue-500 rounded-lg focus:ring-blue-500 w-full bg-blue-100" rows="4" cols="50"></textarea>
+          </div>
+          <div class="flex flex-col border border-black p-7 rounded-lg bg-blue-100">
+            <h1 class="text-center font-bold">Decryption</h1>
+            <p>----------------------------------------------------------</p>
+            <span class="font-bold"> Enter your text:</span>
+            <input type="text" class="decrypt_user_text  border border-blue-500 rounded-lg text-black d p-2.5 focus:ring-blue-500 w-full bg-blue-100">
+            <span class="font-bold">Enter your Key :</span>
+            <input type="text" class="decrypt_user_key  border border-blue-500 rounded-lg text-black d p-2.5 focus:ring-blue-500 w-full bg-blue-100">
+            <br>
+            <span class="flex justify-center items-center">
+              <button id="decryptbutton" class="w-32 text-black bg-blue-500 hover:bg-blue-700 focus:ring-4  font-medium rounded-lg text-2xl px-5 py-2.5 text-center ">
+                <span class="font-bold"> Decrypt</span>
+              </button>
+            </span>
+            <br>
+            <br>
+            <h4 class="font-bold">Decrypted Text:</h4>
+            <textarea id="decrypted_output" class="block p-2.5 w-full text-2xl x border border-blue-500 rounded-lg text-black d p-2.5 focus:ring-blue-500 w-full bg-blue-100" rows="6" cols="50"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="content h-screen flex flex-col justify-center" id="accordion">
+        <h3>What is DES ? </h3>
+        <div>
+          <p> Data Encryption Standard (DES) is an outdated symmetric key method of data encryption. It was adopted in 1977 for government agencies to protect sensitive data and was officially retired in 2005. IBM researchers originally designed the standard in the early 1970s. </p>
+        </div>
+        <h3>Section 2</h3>
+        <div>
+          <p> Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In suscipit faucibus urna. </p>
+        </div>
+        <h3>Section 3</h3>
+        <div>
+          <p> Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis. Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui. </p>
+          <ul>
+            <li>List item one</li>
+            <li>List item two</li>
+            <li>List item three</li>
+          </ul>
+        </div>
+        <h3>Section 4</h3>
+        <div>
+          <p> Cras dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia mauris vel est. </p>
+          <p> Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="aes.js"></script>
+  </body>
+</html>
+                                                                                                                                                                                                          
+ AES.JS
+   $('.textgradient').on('click', function(){
+    $(document).scrollTop($(document).height());  
+});
+
+$('.encrypt_user_text , .encrypt_user_key').on('change input', function() {
+    var text_len = $('.encrypt_user_text').val().length;
+    var key_len = $('.encrypt_user_key').val().length;
+    if(text_len>=16 && key_len>=16){
+        $('#encryptbutton').prop('disabled',false);
+        $('#encryptbutton').removeClass('cursor-not-allowed')}
+  });
+
+$("#encryptbutton").click(function(){
+    var text = $(".encrypt_user_text").val();
+    var key = $(".encrypt_user_key").val();
+    var user_mode = $(".encrypt_mode").find(":selected").text();
+    switch(user_mode){
+        case "CBC":
+            var encrypted = CryptoJS.AES.encrypt(text,key, {
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.AnsiX923
+              });
+        case "CFB":
+            var encrypted = CryptoJS.AES.encrypt(text,key, {
+                mode: CryptoJS.mode.CFB,
+                padding: CryptoJS.pad.AnsiX923
+              });
+        case "CTR":
+            var encrypted = CryptoJS.AES.encrypt(text,key, {
+                mode: CryptoJS.mode.CTR,
+                padding: CryptoJS.pad.AnsiX923
+              });
+
+        case "OFB":
+            var encrypted = CryptoJS.AES.encrypt(text,key, {
+                mode: CryptoJS.mode.OFB,
+                padding: CryptoJS.pad.AnsiX923
+              });
+
+        case "ECB":
+            var encrypted = CryptoJS.AES.encrypt(text,key, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.AnsiX923
+              });
+    }
+   
+    $("#encrypted_output").val(encrypted);
+});
+
+$("#decryptbutton").click(function(){
+    var text = $(".decrypt_user_text").val();
+    var key = $(".decrypt_user_key").val();
+    var decrypted = CryptoJS.AES.decrypt(text,key, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.AnsiX923
+      });
+     var output = CryptoJS.enc.Latin1.stringify(decrypted);
+     $("#decrypted_output").val(output);
+});
+
+caesar.html
+ <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+      $(function() {
+        $("#accordion").accordion();
+      });
+    </script>
+    <style>
+      .myBox {
+        border-bottom: 5px solid transparent;
+        border-image: linear-gradient(0.25turn, rgba(255, 249, 34), rgba(255, 0, 128), rgba(56, 2, 155, 0));
+        border-image-slice: 1;
+        width: 15%;
+        text-align: center;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+  <body class="">
+    <div class="flex flex-col">
+      <div class="textandarea h-screen outer flex flex-col">
+        <br>
+        <br>
+        <textgradient class="textgradient flex justify-center items-center hover:cursor-pointer">
+          <h1 class="text-5xl myBox text-center"> Caesar Cipher </h1>
+        </textgradient>
+        <br>
+        <div class="outer flex gap-16  justify-center items-center">
+          <div class="input">
+            <h3>Enter your input</h3>
+            <br>
+            <textarea id="input" placeholder="Enter your input" rows="15" cols="70" class="rounded ring-8 ring-blue-500 bg-slate-200"></textarea>
+          </div>
+          <div>
+            <select class="enc rotation rounded ring-8 ring-blue-500 bg-slate-200">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+              <option value="21">21</option>
+              <option value="22">22</option>
+              <option value="23">23</option>
+              <option value="24">24</option>
+              <option value="25">25</option>
+              <option value="26">26</option>
+            </select>
+            <br>
+            <input type="radio" name="user_choice" value="encrypt" class="usr-choice-enc" id="encrypt" checked>Encrypt <br>
+            <input type="radio" name="user_choice" value="decrypt" class="usr-choice-dec" id="decrypt">Decrypt <br>
+          </div>
+          <div class="output">
+            <h3>Your output</h3>
+            <br>
+            <textarea id="output" placeholder="Output will be displayed here.. " rows="15" cols="70" class="rounded ring-8 ring-blue-500 bg-slate-200"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="content h-screen flex flex-col justify-center" id="accordion">
+        <h3>What is DES ? </h3>
+        <div>
+          <p> Data Encryption Standard (DES) is an outdated symmetric key method of data encryption. It was adopted in 1977 for government agencies to protect sensitive data and was officially retired in 2005. IBM researchers originally designed the standard in the early 1970s. </p>
+        </div>
+        <h3>Section 2</h3>
+        <div>
+          <p> Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In suscipit faucibus urna. </p>
+        </div>
+        <h3>Section 3</h3>
+        <div>
+          <p> Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis. Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui. </p>
+          <ul>
+            <li>List item one</li>
+            <li>List item two</li>
+            <li>List item three</li>
+          </ul>
+        </div>
+        <h3>Section 4</h3>
+        <div>
+          <p> Cras dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia mauris vel est. </p>
+          <p> Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="caesar.js"></script>
+  </body>
+</html>                                                                                                                                                                                                                           
+caesar.js
+// s = string to encrypt, k = shift value
+// s = 'SERR PBQR PNZC' and k = 13 will produce 'FREE CODE CAMP'
+const caesarCipher = function(s, k) {
+    let result = '';
+    
+    for (let i = 0; i < s.length; i++) {
+  
+      let charCode = s[i].charCodeAt();
+      // check that charCode is a lowercase letter; automatically ignores non-letters
+      if (charCode > 96 && charCode < 123) {
+        
+        charCode += k % 26 // makes it work with numbers greater than 26 to maintain correct shift
+        // if shift passes 'z', resets to 'a' to maintain looping shift
+        if (charCode > 122) {
+          charCode = (charCode - 122) + 96;
+        // same as previous, but checking shift doesn't pass 'a' when shifting negative numbers
+        } else if (charCode < 97) {
+          charCode = (charCode - 97) + 123;
+        }
+      }
+  
+      if (charCode > 64 && charCode < 91) {
+        
+        charCode += k % 26
+        
+        if (charCode > 90) {
+          charCode = (charCode - 90) + 64;
+        } else if (charCode < 65) {
+          charCode = (charCode - 65) + 91;
+        }
+      }
+  
+      result += String.fromCharCode(charCode);
+    }
+    return result
+  }
+
+
+$(document).ready(function(){
+  $('.textgradient').on('click', function(){
+    $(document).scrollTop($(document).height());  
+ });
+    $('#input').on('input', function(){
+      var mode = $("input[type='radio']:checked").val();
+      if($('.rotation').val() !== null && mode == 'encrypt'){
+      let val = $('#input').val();
+      let rotation = $('.rotation').val();
+      let result = caesarCipher(val,rotation);
+      console.log(result);
+      $('#output').text(result);
+    }});
+    $('.rotation').on('change', function(){
+      var mode = $("input[type='radio']:checked").val();
+      if($('#input').val() !== null && mode == 'encrypt'){
+      let val = $('#input').val();
+      let rotation = $('.rotation').val();
+      let result = caesarCipher(val,rotation);
+      console.log(result);
+      $('#output').text(result);
+    }});
+    $('#input').on('input', function(){
+      var mode = $("input[type='radio']:checked").val();
+      if($('.rotation').val() !== null && mode == 'decrypt'){
+      let val = $('#input').val();
+      let rotation = $('.rotation').val();
+      let new_rot = -1 *  rotation;
+      let result = caesarCipher(val,new_rot);
+      console.log(result);
+      $('#output').text(result);
+    }});
+    $('.rotation').on('change', function(){
+      var mode = $("input[type='radio']:checked").val();
+      if($('#input').val() !== null && mode == 'decrypt'){
+      let val = $('#input').val();
+      let rotation = $('.rotation').val();
+      let new_rot = -1 *  rotation;
+      let result = caesarCipher(val,new_rot);
+      console.log(result);
+      $('#output').text(result);
+    }});
+    $('.usr-choice-enc').on('change', function () { 
+      if($('#input').val() !== null){
+          let val = $('#input').val();
+          let rotation = $('.rotation').val();
+          let result = caesarCipher(val,rotation);
+          console.log(result);
+          $('#output').text(result);
+    
+     }});
+     
+    $('.usr-choice-dec').on('change', function () { 
+      if($('#input').val() !== null){
+        let val = $('#input').val();
+      let rotation = $('.rotation').val();
+      let new_rot = -1 *  rotation;
+      let result = caesarCipher(val,new_rot);
+      console.log(result);
+      $('#output').text(result);
+    
+     }});
+     
+}); 
+
+FULL ALGORITHM IS NOT MENTIONED DUE TO COPYRIGHT SITUATIONS!!!!
+THANK YOU                                                                                                                                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                      
